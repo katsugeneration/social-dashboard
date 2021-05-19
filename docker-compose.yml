@@ -1,4 +1,4 @@
-version: "3.9"
+version: "3"
 
 services:
   devenv:
@@ -7,6 +7,6 @@ services:
       - .:/repo
       - ~/.aws:/root/.aws
     environment:
-      - AWS_DEFAULT_REGION=region
-      - AWS_PROFILE=default
+      - AWS_DEFAULT_REGION
+      - AWS_PROFILE
     tty: true

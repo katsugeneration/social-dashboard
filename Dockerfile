@@ -1,8 +1,6 @@
 FROM debian:buster-slim
 
-ENV TF_VERION=0.15.3 \
-    AWS_DEFAULT_REGION=region \
-    AWS_PROFILE=default
+ENV TF_VERION=0.15.3
 
 RUN apt-get update && apt-get install -y git curl unzip gnupg lsb-release software-properties-common
 
