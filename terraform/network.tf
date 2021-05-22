@@ -76,10 +76,37 @@ resource "aws_security_group" "rds_redash_sg" {
   vpc_id      = aws_vpc.social_dashboard_vpc.id
 
   ingress {
-    description = "Postgres Insider Access"
-    from_port   = 5432
-    to_port     = 5432
-    protocol    = "tcp"
+    description     = "Postgres Insider Access"
+    from_port       = 5432
+    to_port         = 5432
+    protocol        = "tcp"
+    security_groups = [aws_security_group.ecs_redash_sg.id]
+  }
+
+  egress {
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
+  depends_on = [
+    aws_vpc.social_dashboard_vpc,
+    aws_security_group.ecs_redash_sg,
+  ]
+}
+
+resource "aws_security_group" "ec_redash_sg" {
+  name        = "ec_redash_sg"
+  description = "Elastic Cache Redash Security Group"
+  vpc_id      = aws_vpc.social_dashboard_vpc.id
+
+  ingress {
+    description     = "Postgres Insider Access"
+    from_port       = 6379
+    to_port         = 6379
+    protocol        = "tcp"
     security_groups = [aws_security_group.ecs_redash_sg.id]
   }
 
