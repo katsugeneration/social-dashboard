@@ -1,0 +1,12 @@
+version: "3"
+
+services:
+  devenv:
+    build: .
+    volumes:
+      - .:/repo
+      - ~/.aws:/root/.aws
+    environment:
+      - AWS_DEFAULT_REGION
+      - AWS_PROFILE
+    tty: true
