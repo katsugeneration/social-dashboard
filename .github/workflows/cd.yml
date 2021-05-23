@@ -10,7 +10,7 @@ jobs:
     defaults:
       run:
         working-directory: terraform
-    if: contains(github.event.issue.labels.*.name, 'apply')
+    if: contains(github.event.pull.labels.*.name, 'apply')
     steps:
       - uses: actions/checkout@v2
       - uses: hashicorp/setup-terraform@v1
