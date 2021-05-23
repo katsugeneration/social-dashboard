@@ -12,9 +12,9 @@ jobs:
         working-directory: terraform
     # if: contains(github.event.pull.labels.*.name, 'apply')
     steps:
-      env:
-        GITHUB_CONTEXT: ${{ toJSON(github) }}
-      run: echo "$GITHUB_CONTEXT"
+      - env:
+          GITHUB_CONTEXT: ${{ toJSON(github) }}
+        run: echo "$GITHUB_CONTEXT"
       # - uses: actions/checkout@v2
       # - uses: hashicorp/setup-terraform@v1
       #   with:
