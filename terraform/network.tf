@@ -236,6 +236,17 @@ resource "aws_lb_target_group" "redash_server_alb" {
   protocol    = "HTTP"
   vpc_id      = aws_vpc.social_dashboard_vpc.id
   target_type = "ip"
+
+  health_check {
+    enabled             = true
+    healthy_threshold   = 5
+    interval            = 30
+    path                = "/"
+    protocol            = "HTTP"
+    timeout             = 5
+    unhealthy_threshold = 2
+    matcher             = "200-399"
+  }
 }
 
 resource "aws_lb_listener" "redash_server_alb" {
