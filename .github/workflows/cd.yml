@@ -10,24 +10,27 @@ jobs:
     defaults:
       run:
         working-directory: terraform
-    if: contains(github.event.pull.labels.*.name, 'apply')
+    # if: contains(github.event.pull.labels.*.name, 'apply')
     steps:
-      - uses: actions/checkout@v2
-      - uses: hashicorp/setup-terraform@v1
-        with:
-          terraform_version: 0.15.3
-      - run: terraform init
+      env:
+        GITHUB_CONTEXT: ${{ toJSON(github) }}
+      run: echo "$GITHUB_CONTEXT"
+      # - uses: actions/checkout@v2
+      # - uses: hashicorp/setup-terraform@v1
+      #   with:
+      #     terraform_version: 0.15.3
+      # - run: terraform init
 
-      - id: apply
-        run: terraform apply -var "redash_db_user_name=${{ secrets.REDASH_DB_USERNAME }}" -var "redash_db_user_password=${{ secrets.REDASH_DB_PASSWORD }}"
+      # - id: apply
+      #   run: terraform apply -var "redash_db_user_name=${{ secrets.REDASH_DB_USERNAME }}" -var "redash_db_user_password=${{ secrets.REDASH_DB_PASSWORD }}"
 
-      - id: plan
-        run: terraform plan -no-color -var "redash_db_user_name=${{ secrets.REDASH_DB_USERNAME }}" -var "redash_db_user_password=${{ secrets.REDASH_DB_PASSWORD }}" -detailed-exitcode
+      # - id: plan
+      #   run: terraform plan -no-color -var "redash_db_user_name=${{ secrets.REDASH_DB_USERNAME }}" -var "redash_db_user_password=${{ secrets.REDASH_DB_PASSWORD }}" -detailed-exitcode
 
-      - uses: actions/github-script@v4
-        env:
-          PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            github.pulls.merge()
+      # - uses: actions/github-script@v4
+      #   env:
+      #     PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
+      #   with:
+      #     github-token: ${{ secrets.GITHUB_TOKEN }}
+      #     script: |
+      #       github.pulls.merge()
