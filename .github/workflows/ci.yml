@@ -6,8 +6,8 @@ jobs:
   test:
     runs-on: ubuntu-20.04
     defaults:
-    run:
-      working-directory: terraform
+      run:
+        working-directory: terraform
     steps:
       - uses: actions/checkout@v2
       - uses: hashicorp/setup-terraform@v1
