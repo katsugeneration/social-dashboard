@@ -5,6 +5,13 @@ on:
 jobs:
   test:
     runs-on: ubuntu-20.04
+    defaults:
+    run:
+      working-directory: terraform
     steps:
       - uses: actions/checkout@v2
-      - run: ls -l
+      - uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 0.12.25
+      - run: terraform init
+      - run: terraform plan
