@@ -6,7 +6,9 @@ services:
     volumes:
       - .:/repo
       - ~/.aws:/root/.aws
+      - ~/.config:/root/.config
     environment:
       - AWS_DEFAULT_REGION
       - AWS_PROFILE
+      - GOOGLE_CLOUD_PROJECT
     tty: true
