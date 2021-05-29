@@ -10,7 +10,7 @@ jobs:
   check:
     runs-on: ubuntu-20.04
     steps:
-      - run echo "${{ toJSON(github.event) }}"
+      - run: echo "${{ toJSON(github.event) }}"
       - uses: actions/github-script@v4
         if: ${{ github.event.workflow_run.conclusion == 'success' }}
         env:
