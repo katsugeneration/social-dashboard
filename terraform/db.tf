@@ -12,7 +12,7 @@ resource "aws_db_subnet_group" "sg_redash_rds" {
 }
 
 resource "aws_db_parameter_group" "pg_redash_rds" {
-  name   = "pg-redash-rds"
+  name   = "pg-redash-rd"
   family = "postgres13"
 }
 
