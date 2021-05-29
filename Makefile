@@ -1,3 +1,6 @@
+setdev:
+	docker volume create devenv
+
 build:
 	docker-compose build
 
