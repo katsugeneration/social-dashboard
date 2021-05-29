@@ -57,3 +57,51 @@ jobs:
               repo: context.repo.repo,
               pull_number: context.issue.number
             })
+  check_dbt:
+    runs-on: ubuntu-20.04
+    container: 
+      image: python:3.9.5
+    defaults:
+      run:
+        working-directory: dbt
+    steps:
+      - uses: actions/checkout@v2
+      - run: |
+          git fetch --no-tags --prune --depth=1 origin +refs/heads/*:refs/remotes/origin/*
+      - id: check_dbt
+        run: |
+          ret=$(git diff origin/main HEAD --name-only | grep -E '^dbt' | wc -l)
+          if [ $ret -ne 0 ] ; then
+            exit 0
+          else
+            exit 1
+          fi
+        continue-on-error: true
+      - name: Set up Cloud SDK
+        if: ${{ steps.check_dbt.outcome == 'success' }}
+        uses: google-github-actions/setup-gcloud@master
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+          export_default_credentials: true
+      - run: pip install poetry && poetry install
+        if: ${{ steps.check_dbt.outcome == 'success' }}
+      - env:
+          GOOGLE_CLOUD_PROJECT: "${{ secrets.GCP_PROJECT_ID }}"
+        if: ${{ steps.check_dbt.outcome == 'success' }}
+        run: |
+          poetry run dbt run --profiles-dir ./ --vars "{bq_dataset_name: social_dataset}" -t prod && \
+          poetry run dbt test --profiles-dir ./ --vars "{bq_dataset_name: social_dataset}" -t prod
+
+      - uses: actions/github-script@v4
+        if: ${{ steps.check_dbt.outcome == 'success' }}
+        env:
+          PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.pulls.merge({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number
+            })
