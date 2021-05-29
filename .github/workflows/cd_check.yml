@@ -10,7 +10,6 @@ jobs:
   check:
     runs-on: ubuntu-20.04
     steps:
-      - run: echo "${{ toJSON(github.event.workflow_run) }}"
       - uses: actions/github-script@v4
         if: ${{ github.event.workflow_run.conclusion == 'success' }}
         env:
@@ -30,7 +29,6 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            console.log(process.env.ISSUE_NUMBER)
             github.issues.removeLabel({
               owner: context.repo.owner,
               repo: context.repo.repo,
