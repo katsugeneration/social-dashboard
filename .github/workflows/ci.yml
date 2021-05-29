@@ -83,4 +83,13 @@ jobs:
             exit 1
           fi
         continue-on-error: true
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@master
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+          export_default_credentials: true
       - run: pip install poetry && poetry install
+      - env:
+          GOOGLE_CLOUD_PROJECT: "${{ secrets.GCP_PROJECT_ID }}"
+        run: poetry run dbt debug --profiles-dir ./ --vars "{bq_dataset_name: social_dataset}"
