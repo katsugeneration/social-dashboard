@@ -63,3 +63,24 @@ jobs:
               repo: context.repo.repo,
               body: output
             })
+  check_dbt:
+    container: 
+      image: python:3.9.5-buster
+    defaults:
+      run:
+        working-directory: dbt
+    steps:
+      - uses: actions/checkout@v2
+      - run: |
+          git fetch --no-tags --prune --depth=1 origin +refs/heads/*:refs/remotes/origin/*
+      - id: check_dbt
+        run: |
+          ret=$(git diff origin/main HEAD --name-only | grep -E '^dbt' | wc -l)
+          if [ $ret -ne 0 ] ; then
+            exit 0
+          else
+            exit 1
+          fi
+        continue-on-error: true
+      - run: pip install poetry && poetry install
+        if: ${{ steps.check_terraform.outcome == 'success' }}
