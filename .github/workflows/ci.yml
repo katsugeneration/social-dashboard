@@ -93,4 +93,4 @@ jobs:
       - env:
           GOOGLE_CLOUD_PROJECT: "${{ secrets.GCP_PROJECT_ID }}"
         run: |
-          poetry run dbt debug --profiles-dir ./ --vars "{bq_dataset_name: social_dataset}" --profile prod
+          poetry run dbt debug --profiles-dir ./ --vars "{bq_dataset_name: social_dataset}" -t prod
