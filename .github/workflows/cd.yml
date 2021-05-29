@@ -12,6 +12,7 @@ jobs:
         working-directory: terraform
     if: github.event.label.name == 'apply'
     steps:
+      - run: exit 1
       - uses: actions/checkout@v2
       - run: |
           git fetch --no-tags --prune --depth=1 origin +refs/heads/*:refs/remotes/origin/*
