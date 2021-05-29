@@ -46,18 +46,6 @@ jobs:
         if: ${{ steps.check_terraform.outcome == 'success' }}
         run: terraform plan -no-color -var "redash_db_user_name=${{ secrets.REDASH_DB_USERNAME }}" -var "redash_db_user_password=${{ secrets.REDASH_DB_PASSWORD }}" -detailed-exitcode
 
-      - uses: actions/github-script@v4
-        if: ${{ steps.check_terraform.outcome == 'success' }}
-        env:
-          PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            github.pulls.merge({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: context.issue.number
-            })
   deploy_dbt:
     runs-on: ubuntu-20.04
     container: 
@@ -93,16 +81,3 @@ jobs:
         run: |
           poetry run dbt run --profiles-dir ./ --vars "{bq_dataset_name: social_dataset}" -t prod && \
           poetry run dbt test --profiles-dir ./ --vars "{bq_dataset_name: social_dataset}" -t prod
-
-      - uses: actions/github-script@v4
-        if: ${{ steps.check_dbt.outcome == 'success' }}
-        env:
-          PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            github.pulls.merge({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: context.issue.number
-            })

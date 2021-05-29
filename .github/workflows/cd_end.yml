@@ -1,0 +1,24 @@
+name: CD
+on:
+  workflow_run:
+    workflows:
+      - CD
+    types:
+      - completed
+
+jobs:
+  merge_branch:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/github-script@v4
+        if: ${{ steps.check_terraform.outcome == 'success' }}
+        env:
+          PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.pulls.merge({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number
+            })
