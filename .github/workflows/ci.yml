@@ -10,6 +10,8 @@ jobs:
         working-directory: terraform
     steps:
       - uses: actions/checkout@v2
+        with:
+          - fetch-depth: 2
       - id: check_terraform
         run: |
           ret=$(git diff main --name-only | grep -E '^terraform' | wc -l)
