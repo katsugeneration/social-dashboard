@@ -12,7 +12,7 @@ models:
           - name: divide_1st
             description: "1st divide income"
             tests:
-              - is_ove:
+              - is_over:
                   criteria: 0
           - name: divide_2nd
             description: "2nd divide income"
