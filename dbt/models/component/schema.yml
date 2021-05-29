@@ -1,0 +1,36 @@
+
+version: 2
+
+models:
+    - name: jasso_gakuseiseikatsu_stats_annual_income_divide_university_type_and_income
+      description: "Annual income of univercity student house divide university and income."
+      columns:
+          - name: university_type
+            description: "University type"
+          - name: year
+            description: "Stat year"
+          - name: divide_1st
+            description: "1st divide income"
+            tests:
+              - is_over:
+                  criteria: 0
+          - name: divide_2nd
+            description: "2nd divide income"
+            tests:
+              - is_over:
+                  criteria: 0
+          - name: divide_3rd
+            description: "3rd divide income"
+            tests:
+              - is_over:
+                  criteria: 0
+          - name: divide_4th
+            description: "4th divide income"
+            tests:
+              - is_over:
+                  criteria: 0
+          - name: divide_5th
+            description: "5th divide income"
+            tests:
+              - is_over:
+                  criteria: 0

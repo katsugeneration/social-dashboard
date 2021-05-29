@@ -4,9 +4,15 @@ services:
   devenv:
     build: .
     volumes:
-      - .:/repo
+      - devenv:/app
+      - .:/app/repo
       - ~/.aws:/root/.aws
+      - ~/.config:/root/.config
+      - ~/.ssh:/root/.ssh
     environment:
       - AWS_DEFAULT_REGION
       - AWS_PROFILE
+      - GOOGLE_CLOUD_PROJECT
     tty: true
+volumes:
+  devenv:
