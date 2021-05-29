@@ -5,7 +5,7 @@ on:
       - labeled
 
 jobs:
-  deploy:
+  deploy_terraform:
     runs-on: ubuntu-20.04
     defaults:
       run:
@@ -57,7 +57,7 @@ jobs:
               repo: context.repo.repo,
               pull_number: context.issue.number
             })
-  check_dbt:
+  deploy_dbt:
     runs-on: ubuntu-20.04
     container: 
       image: python:3.9.5
