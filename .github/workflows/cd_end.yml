@@ -11,9 +11,7 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/github-script@v4
-        if: ${{ steps.check_terraform.outcome == 'success' }}
-        env:
-          PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
+        if: ${{ github.event.workflow_run.conclusion == 'success' }}
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
@@ -21,4 +19,15 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               pull_number: context.issue.number
+            })
+      - uses: actions/github-script@v4
+        if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.issues.removeLabel({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number
+              name: 'apply'
             })
