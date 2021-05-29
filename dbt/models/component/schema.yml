@@ -17,7 +17,7 @@ models:
           - name: divide_2nd
             description: "2nd divide income"
             tests:
-              - is_over:
+            - is_over:
                   criteria: 0
           - name: divide_3rd
             description: "3rd divide income"
