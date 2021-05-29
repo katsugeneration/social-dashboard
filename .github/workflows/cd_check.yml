@@ -20,7 +20,7 @@ jobs:
             github.pulls.merge({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              pull_number: ${process.env.ISSUE_NUMBER}
+              pull_number: process.env.ISSUE_NUMBER
             })
       - uses: actions/github-script@v4
         if: ${{ github.event.workflow_run.conclusion == 'failure' }}
@@ -32,6 +32,6 @@ jobs:
             github.issues.removeLabel({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              issue_number: ${process.env.ISSUE_NUMBER},
+              issue_number: process.env.ISSUE_NUMBER,
               name: 'apply'
             })
