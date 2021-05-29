@@ -23,6 +23,7 @@ jobs:
           else
             exit 1
           fi
+        continue-on-error: true
       - name: configure AWS credentials
         if: ${{ steps.check_terraform.outcome == 'success' }}
         uses: aws-actions/configure-aws-credentials@v1
