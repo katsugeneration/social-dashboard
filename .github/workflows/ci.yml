@@ -92,4 +92,5 @@ jobs:
       - run: pip install poetry && poetry install
       - env:
           GOOGLE_CLOUD_PROJECT: "${{ secrets.GCP_PROJECT_ID }}"
-        run: poetry run dbt debug --profiles-dir ./ --vars "{bq_dataset_name: social_dataset}"
+        run: |
+          poetry run dbt debug --profiles-dir ./ --vars "{bq_dataset_name: social_dataset}" --profile prod
