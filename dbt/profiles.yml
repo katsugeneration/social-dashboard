@@ -5,7 +5,7 @@ default:
       type: bigquery
       method: oauth
       project: "{{ env_var('GOOGLE_CLOUD_PROJECT') }}"
-      dataset: "{{ var('bq_dataset_name') }}" # You can also use "schema" here
+      dataset: "{{ var('bq_dataset_name') }}"
       threads: 1
       timeout_seconds: 300
       priority: interactive
@@ -14,10 +14,10 @@ default:
     prod:
       type: bigquery
       method: service-account
-      project: [GCP project id]
-      dataset: [the name of your dbt dataset]
-      threads: [1 or more]
-      keyfile: [/path/to/bigquery/keyfile.json]
+      project: "{{ env_var('GOOGLE_CLOUD_PROJECT') }}"
+      dataset: "{{ var('bq_dataset_name') }}"
+      threads: 1
+      keyfile: "{{ env_var('GOOGLE_APPLICATION_CREDENTIALS') }}"
       timeout_seconds: 300
       priority: interactive
       retries: 1

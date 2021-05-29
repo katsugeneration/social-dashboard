@@ -15,8 +15,8 @@ RUN curl -fsSL https://apt.releases.hashicorp.com/gpg | apt-key add - && \
     apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main" && \
     apt-get update && apt-get install terraform-ls
 
-RUN mkdir repo
-COPY poetry.lock pyproject.toml /app/repo
+RUN mkdir -p /app/repo
+COPY poetry.lock pyproject.toml /app/repo/
 WORKDIR /app/repo
 
 # Install poetry
