@@ -13,24 +13,40 @@ jobs:
     if: github.event.label.name == 'apply'
     steps:
       - uses: actions/checkout@v2
+      - run: |
+          git fetch --no-tags --prune --depth=1 origin +refs/heads/*:refs/remotes/origin/*
+      - id: check_terraform
+        run: |
+          ret=$(git diff origin/main HEAD --name-only | grep -E '^terraform' | wc -l)
+          if [ $ret -ne 0 ] ; then
+            exit 0
+          else
+            exit 1
+          fi
       - name: configure AWS credentials
+        if: ${{ steps.check_terraform.outcome == 'success' }}
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-northeast-1
       - uses: hashicorp/setup-terraform@v1
+        if: ${{ steps.check_terraform.outcome == 'success' }}
         with:
           terraform_version: 0.15.3
       - run: terraform init
+        if: ${{ steps.check_terraform.outcome == 'success' }}
 
       - id: apply
+        if: ${{ steps.check_terraform.outcome == 'success' }}
         run: terraform apply -var "redash_db_user_name=${{ secrets.REDASH_DB_USERNAME }}" -var "redash_db_user_password=${{ secrets.REDASH_DB_PASSWORD }}"
 
       - id: plan
+        if: ${{ steps.check_terraform.outcome == 'success' }}
         run: terraform plan -no-color -var "redash_db_user_name=${{ secrets.REDASH_DB_USERNAME }}" -var "redash_db_user_password=${{ secrets.REDASH_DB_PASSWORD }}" -detailed-exitcode
 
       - uses: actions/github-script@v4
+        if: ${{ steps.check_terraform.outcome == 'success' }}
         env:
           PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
         with:
