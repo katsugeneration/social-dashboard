@@ -84,4 +84,4 @@ jobs:
           fi
         continue-on-error: true
       - run: pip install poetry && poetry install
-        if: ${{ steps.check_terraform.outcome == 'success' }}
+        if: ${{ steps.check_dbt.outcome == 'success' }}
