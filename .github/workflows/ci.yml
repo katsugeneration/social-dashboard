@@ -64,8 +64,9 @@ jobs:
               body: output
             })
   check_dbt:
+    runs-on: ubuntu-20.04
     container: 
-      image: python:3.9.5-buster
+      image: python:3.9.5
     defaults:
       run:
         working-directory: dbt
