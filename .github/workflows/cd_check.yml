@@ -1,4 +1,4 @@
-name: CD END
+name: CD CHECK
 on:
   workflow_run:
     workflows:
