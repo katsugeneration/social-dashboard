@@ -44,7 +44,7 @@ jobs:
 
       - id: plan
         if: ${{ steps.check_terraform.outcome == 'success' }}
-        run: terraform plan -no-color
+        run: terraform plan -no-color -var "gcp_region=${{ secrets.GCLOUD_REGION }}"
         continue-on-error: true
 
       - uses: actions/github-script@v4
