@@ -46,6 +46,8 @@ jobs:
         if: ${{ steps.check_terraform.outcome == 'success' }}
 
       - id: apply
+        env:
+          GCLOUD_REGION: "${{ secrets.GCLOUD_REGION }}"
         if: ${{ steps.check_terraform.outcome == 'success' }}
         run: terraform apply -auto-approve
 
