@@ -184,3 +184,9 @@ resource "google_data_catalog_tag_template" "data_ingestion" {
   }
   timeouts {}
 }
+
+resource "google_data_catalog_entry_group" "social_data" {
+  description    = "Social Data Entries"
+  display_name   = "social-data"
+  entry_group_id = "social_data"
+}
