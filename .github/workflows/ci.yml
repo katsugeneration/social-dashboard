@@ -37,7 +37,7 @@ jobs:
 
       - id: plan
         if: ${{ steps.check_terraform.outcome == 'success' }}
-        run: terraform plan -no-color -var "redash_db_user_name=${{ secrets.REDASH_DB_USERNAME }}" -var "redash_db_user_password=${{ secrets.REDASH_DB_PASSWORD }}"
+        run: terraform plan -no-color
         continue-on-error: true
 
       - uses: actions/github-script@v4

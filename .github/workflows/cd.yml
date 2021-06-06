@@ -40,11 +40,11 @@ jobs:
 
       - id: apply
         if: ${{ steps.check_terraform.outcome == 'success' }}
-        run: terraform apply -var "redash_db_user_name=${{ secrets.REDASH_DB_USERNAME }}" -var "redash_db_user_password=${{ secrets.REDASH_DB_PASSWORD }}"
+        run: terraform apply
 
       - id: plan
         if: ${{ steps.check_terraform.outcome == 'success' }}
-        run: terraform plan -no-color -var "redash_db_user_name=${{ secrets.REDASH_DB_USERNAME }}" -var "redash_db_user_password=${{ secrets.REDASH_DB_PASSWORD }}" -detailed-exitcode
+        run: terraform plan -no-color -detailed-exitcode
 
   deploy_dbt:
     runs-on: ubuntu-20.04
