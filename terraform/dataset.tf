@@ -2,6 +2,7 @@ resource "google_bigquery_dataset" "social_dataset" {
   dataset_id                 = "social_dataset"
   delete_contents_on_destroy = false
   labels                     = {}
+  location                   = var.gcp_region
 
   access {
     role          = "OWNER"
