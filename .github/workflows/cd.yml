@@ -47,7 +47,7 @@ jobs:
 
       - id: apply
         if: ${{ steps.check_terraform.outcome == 'success' }}
-        run: terraform apply
+        run: terraform apply -auto-approve
 
       - id: plan
         if: ${{ steps.check_terraform.outcome == 'success' }}
