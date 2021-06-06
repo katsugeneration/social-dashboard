@@ -52,6 +52,8 @@ jobs:
         run: terraform apply -auto-approve
 
       - id: plan
+        env:
+          GCLOUD_REGION: "${{ secrets.GCLOUD_REGION }}"
         if: ${{ steps.check_terraform.outcome == 'success' }}
         run: terraform plan -no-color -detailed-exitcode
 
