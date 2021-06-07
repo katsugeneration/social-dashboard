@@ -1,7 +1,7 @@
 module "runner" {
   source = "./runner"
   for_each = {
-    sample = {}
+    jasso-gakuseiseikatsu-stats-importer = {}
   }
   name   = each.key
   region = var.gcp_region
