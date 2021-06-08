@@ -26,9 +26,10 @@ def handler():
         bucket.create(location=region)
 
     datacatalog = datacatalog_v1.DataCatalogClient()
+    entry_group_id = "social_data"
     entry_group = datacatalog.get_entry_group(
         name=datacatalog_v1.DataCatalogClient.entry_group_path(
-            project_id, region, "social_data"
+            project_id, region, entry_group_id
         )
     )
     tag_template = datacatalog.get_tag_template(
@@ -39,7 +40,9 @@ def handler():
 
     entry_id = "jasso_gakuseiseikatsu_stats_raw"
     entry = datacatalog.get_entry(
-        name=f"projects/{project_id}/locations/{region}/entryGroups/{entry_group.id}/entries/{entry_id}"
+        name=datacatalog_v1.DataCatalogClient.entry_path(
+            project_id, region, entry_group_id, entry_id
+        )
     )
     if entry is None:
         entry = datacatalog_v1.types.Entry()
@@ -99,7 +102,9 @@ def handler():
 
     entry_id = "jasso_gakuseiseikatsu_stats_annual_income_divide_university"
     entry = datacatalog.get_entry(
-        name=f"projects/{project_id}/locations/{region}/entryGroups/{entry_group.id}/entries/{entry_id}"
+        name=datacatalog_v1.DataCatalogClient.entry_path(
+            project_id, region, entry_group_id, entry_id
+        )
     )
     if entry is None:
         entry = datacatalog_v1.types.Entry()
