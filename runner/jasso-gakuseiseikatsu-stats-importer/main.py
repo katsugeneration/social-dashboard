@@ -39,12 +39,11 @@ def handler():
     )
 
     entry_id = "jasso_gakuseiseikatsu_stats_raw"
-    entry = datacatalog.get_entry(
-        name=datacatalog_v1.DataCatalogClient.entry_path(
-            project_id, region, entry_group_id, entry_id
-        )
-    )
-    if entry is None:
+    entries = datacatalog.list_entries(parent=entry_group.name)
+    entries = [entry for entry in entries if entry.display_name == bucket_name]
+    if len(entries) != 0:
+        entry = entries[0]
+    else:
         entry = datacatalog_v1.types.Entry()
         entry.display_name = bucket_name
         entry.gcs_fileset_spec.file_patterns.append(f"gs://{bucket_name}/*.xlsx")
@@ -102,20 +101,17 @@ def handler():
     )
     tag = datacatalog.update_tag(tag=tag)
 
+    bucket_name = "jasso-gakuseiseikatsu-stats-annual-income-divide-university"
+
     entry_id = "jasso_gakuseiseikatsu_stats_annual_income_divide_university"
-    entry = datacatalog.get_entry(
-        name=datacatalog_v1.DataCatalogClient.entry_path(
-            project_id, region, entry_group_id, entry_id
-        )
-    )
-    if entry is None:
+    entries = datacatalog.list_entries(parent=entry_group.name)
+    entries = [entry for entry in entries if entry.display_name == bucket_name]
+    if len(entries) != 0:
+        entry = entries[0]
+    else:
         entry = datacatalog_v1.types.Entry()
-        entry.display_name = (
-            "jasso-gakuseiseikatsu-stats-annual-income-divide-university"
-        )
-        entry.gcs_fileset_spec.file_patterns.append(
-            "gs://jasso-gakuseiseikatsu-stats-annual-income-divide-university/*.parquet"
-        )
+        entry.display_name = bucket_name
+        entry.gcs_fileset_spec.file_patterns.append(f"gs://{bucket_name}/*.parquet")
         entry.type_ = datacatalog_v1.EntryType.FILESET
 
         columns = []
@@ -225,8 +221,6 @@ def handler():
             for i in range(3, 18):
                 k = df.iloc[2, i]
                 data.append((s, g, k, df.iloc[ic, i]))
-
-    bucket_name = "jasso-gakuseiseikatsu-stats-annual-income-divide-university"
 
     bucket = storage_client.bucket(bucket_name)
     if not bucket.exists():
