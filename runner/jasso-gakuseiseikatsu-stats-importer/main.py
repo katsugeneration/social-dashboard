@@ -35,15 +35,17 @@ def handler():
         )
     )
 
-    entry_name = "jasso_gakuseiseikatsu_stats_raw"
-    entry = datacatalog.get_entry(name=entry_name)
+    entry_id = "jasso_gakuseiseikatsu_stats_raw"
+    entry = datacatalog.get_entry(
+        name=f"projects/{project_id}/locations/{region}/entryGroups/{entry_group.id}/entries/{entry_id}"
+    )
     if entry is None:
         entry = datacatalog_v1.types.Entry()
         entry.display_name = bucket_name
         entry.gcs_fileset_spec.file_patterns.append(f"gs://{bucket_name}/*.xlsx")
         entry.type_ = datacatalog_v1.EntryType.FILESET
         entry = datacatalog.create_entry(
-            parent=entry_group.name, entry_id=entry_name, entry=entry
+            parent=entry_group.name, entry_id=entry_id, entry=entry
         )
 
     tag = datacatalog_v1.types.Tag()
