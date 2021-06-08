@@ -53,19 +53,21 @@ def handler():
             parent=entry_group.name, entry_id=entry_id, entry=entry
         )
 
-    tag = datacatalog_v1.types.Tag()
-    tag.template = tag_template.name
-    tag.fields["data_sources"] = datacatalog_v1.types.TagField()
-    tag.fields[
-        "data_sources"
-    ].string_value = (
-        "JASSO学生生活調査 https://www.jasso.go.jp/about/statistics/gakusei_chosa/index.html"
-    )
-    tag.fields["license"] = datacatalog_v1.types.TagField()
-    tag.fields[
-        "license"
-    ].string_value = "日本学生支援機構が「学生生活調査」「高等専門学校生生活調査」「専修学校生生活調査」の結果として公開している情報は、出典の記載をしていただいた上で、どなたでも自由に利用できます。 https://www.jasso.go.jp/about/statistics/gakusei_chosa/riyou.html"
-    tag = datacatalog.create_tag(parent=entry.name, tag=tag)
+    tags = list(datacatalog.list_tags(parent=entry.name))
+    if len(tags) != 0:
+        tag = tags[0]
+    else:
+        tag = datacatalog_v1.types.Tag()
+        tag.template = tag_template.name
+        tag.fields["data_sources"] = datacatalog_v1.types.TagField()
+        tag.fields[
+            "data_sources"
+        ].string_value = "JASSO学生生活調査 https://www.jasso.go.jp/about/statistics/gakusei_chosa/index.html"
+        tag.fields["license"] = datacatalog_v1.types.TagField()
+        tag.fields[
+            "license"
+        ].string_value = "日本学生支援機構が「学生生活調査」「高等専門学校生生活調査」「専修学校生生活調査」の結果として公開している情報は、出典の記載をしていただいた上で、どなたでも自由に利用できます。 https://www.jasso.go.jp/about/statistics/gakusei_chosa/riyou.html"
+        tag = datacatalog.create_tag(parent=entry.name, tag=tag)
 
     tag.fields["latest_job_status"] = datacatalog_v1.types.TagField()
     tag.fields[
@@ -167,17 +169,23 @@ def handler():
             entry=entry,
         )
 
-    tag = datacatalog_v1.types.Tag()
-    tag.template = tag_template.name
-    tag.fields["data_sources"] = datacatalog_v1.types.TagField()
-    tag.fields[
-        "data_sources"
-    ].string_value = "gs://jasso-gakuseiseikatsu-stats-annual-income-divide-university"
-    tag.fields["license"] = datacatalog_v1.types.TagField()
-    tag.fields[
-        "license"
-    ].string_value = "日本学生支援機構が「学生生活調査」「高等専門学校生生活調査」「専修学校生生活調査」の結果として公開している情報は、出典の記載をしていただいた上で、どなたでも自由に利用できます。 https://www.jasso.go.jp/about/statistics/gakusei_chosa/riyou.html"
-    tag = datacatalog.create_tag(parent=entry.name, tag=tag)
+    tags = list(datacatalog.list_tags(parent=entry.name))
+    if len(tags) != 0:
+        tag = tags[0]
+    else:
+        tag = datacatalog_v1.types.Tag()
+        tag.template = tag_template.name
+        tag.fields["data_sources"] = datacatalog_v1.types.TagField()
+        tag.fields[
+            "data_sources"
+        ].string_value = (
+            "gs://jasso-gakuseiseikatsu-stats-annual-income-divide-university"
+        )
+        tag.fields["license"] = datacatalog_v1.types.TagField()
+        tag.fields[
+            "license"
+        ].string_value = "日本学生支援機構が「学生生活調査」「高等専門学校生生活調査」「専修学校生生活調査」の結果として公開している情報は、出典の記載をしていただいた上で、どなたでも自由に利用できます。 https://www.jasso.go.jp/about/statistics/gakusei_chosa/riyou.html"
+        tag = datacatalog.create_tag(parent=entry.name, tag=tag)
 
     tag.fields["latest_job_status"] = datacatalog_v1.types.TagField()
     tag.fields[
