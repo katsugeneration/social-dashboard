@@ -1,3 +1,8 @@
+resource "google_service_account" "pubsub_social_dashboard" {
+  account_id   = "pubsub-social-dashboard"
+  display_name = "pubsub-social-dashboard"
+}
+
 resource "google_pubsub_topic" "jasso_gakuseiseikatsu_stats_importer" {
   name = "jasso-gakuseiseikatsu-stats-importer"
 }
@@ -24,7 +29,7 @@ resource "google_pubsub_subscription" "jasso_gakuseiseikatsu_stats_importer" {
     push_endpoint = module.runner["jasso-gakuseiseikatsu-stats-importer"].url
 
     oidc_token {
-      service_account_email = "pubsub-social-dashboard@ml-project-210100.iam.gserviceaccount.com"
+      service_account_email = google_service_account.pubsub_social_dashboard.email
     }
   }
 
