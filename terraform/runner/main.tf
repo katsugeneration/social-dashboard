@@ -51,6 +51,7 @@ resource "google_cloud_run_service" "main" {
   lifecycle {
     ignore_changes = [
       template[0].spec[0].containers[0].image,
+      template[0].spec[0].containers[0].env,
       template[0].spec[0].service_account_name,
       template[0].metadata[0].annotations,
       metadata[0].annotations,
