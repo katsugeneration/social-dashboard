@@ -40,7 +40,7 @@ def handler():
     entry.gcs_fileset_spec.file_patterns.append(f"gs://{bucket_name}/*.xlsx")
     entry.type_ = datacatalog_v1.EntryType.FILESET
     entry = datacatalog.create_entry(
-        parent=entry_group.name, entry_id=bucket_name, entry=entry
+        parent=entry_group.name, entry_id="jasso_gakuseiseikatsu_stats_raw", entry=entry
     )
 
     tag = datacatalog_v1.types.Tag()
