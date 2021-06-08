@@ -174,7 +174,7 @@ resource "google_data_catalog_tag_template" "data_ingestion" {
           display_name = "retrying"
         }
         allowed_values {
-          display_name = "running"
+          display_name = "completed"
         }
         allowed_values {
           display_name = "skipped"
