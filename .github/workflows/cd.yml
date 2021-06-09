@@ -118,6 +118,6 @@ jobs:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
           service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
           export_default_credentials: true
-      - name: build
+      - name: deploy
         if: ${{ steps.check_runner.outcome == 'success' }}
-        run: make deploy SERVICE_NAME=${{ matrix.runner }} PROJECT_ID=${{ secrets.GCP_PROJECT_ID }} GCLOUD_REGION=${{ secrets.GCLOUD_REGION }}
+        run: GCLOUD_REGION=${{ secrets.GCLOUD_REGION }} make deploy SERVICE_NAME=${{ matrix.runner }} PROJECT_ID=${{ secrets.GCP_PROJECT_ID }}
