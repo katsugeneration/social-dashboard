@@ -120,4 +120,4 @@ jobs:
           export_default_credentials: true
       - name: deploy
         if: ${{ steps.check_runner.outcome == 'success' }}
-        run: GCLOUD_REGION=${{ secrets.GCLOUD_REGION }} make deploy SERVICE_NAME=${{ matrix.runner }} PROJECT_ID=${{ secrets.GCP_PROJECT_ID }}
+        run: make deploy SERVICE_NAME=${{ matrix.runner }} PROJECT_ID=${{ secrets.GCP_PROJECT_ID }} GCLOUD_REGION=${{ secrets.GCLOUD_REGION }}
