@@ -36,7 +36,7 @@ def handler():
     tag_template = datacatalog.get_tag_template(tag_template_id)
 
     entry_id = "jasso_gakuseiseikatsu_stats_raw"
-    entry = datacatalog.get_entry(entry_id)
+    entry = datacatalog.get_entry(entry_group, entry_id)
     if entry is None:
         entry = datacatalog_v1.types.Entry()
         entry.display_name = bucket_name
@@ -73,7 +73,7 @@ def handler():
     bucket_name = "jasso-gakuseiseikatsu-stats-annual-income-divide-university"
 
     entry_id = "jasso_gakuseiseikatsu_stats_annual_income_divide_university"
-    entry = datacatalog.get_entry(entry_id)
+    entry = datacatalog.get_entry(entry_group, entry_id)
     if entry is None:
         entry = datacatalog_v1.types.Entry()
         entry.display_name = bucket_name
