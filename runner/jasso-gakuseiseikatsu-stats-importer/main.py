@@ -1,3 +1,4 @@
+from typing import Optional
 import os
 import requests
 import io
@@ -15,25 +16,17 @@ except:  # noqa E722
 app = FastAPI(debug=False)
 
 
-@app.post("/")
-def handler():
-    storage_client = storage.Client()
-
-    # The name for the new bucket
+def load_stats_raw(
+    storage_client: storage.Client,
+    datacatalog: data_catalog.Client,
+    region: str,
+    entry_group: datacatalog_v1.EntryGroup,
+    tag_template: datacatalog_v1.TagTemplate,
+) -> Optional[io.BytesIO]:
     bucket_name = "jasso-gakuseiseikatsu-stats-raw"
-    project_id = os.environ.get("GOOGLE_CLOUD_PROJECT")
-    region = os.environ.get("GCLOUD_REGION")
-
-    # Creates the new bucket
     bucket = storage_client.bucket(bucket_name)
     if not bucket.exists():
         bucket.create(location=region)
-
-    datacatalog = data_catalog.Client(project_id, region)
-    entry_group_id = "social_data"
-    tag_template_id = "data_ingestion"
-    entry_group = datacatalog.get_entry_group(entry_group_id)
-    tag_template = datacatalog.get_tag_template(tag_template_id)
 
     entry_id = "jasso_gakuseiseikatsu_stats_raw"
     entry = datacatalog.get_entry(entry_group, entry_id)
@@ -69,6 +62,18 @@ def handler():
     res.close()
     raw_dir.upload_from_file(content)
     tag = datacatalog.set_status_completed(tag)
+
+    return content
+
+
+def load_income_stats(
+    storage_client: storage.Client,
+    datacatalog: data_catalog.Client,
+    region: str,
+    entry_group: datacatalog_v1.EntryGroup,
+    tag_template: datacatalog_v1.TagTemplate,
+    content: Optional[io.BytesIO],
+) -> pd.DataFrame:
 
     bucket_name = "jasso-gakuseiseikatsu-stats-annual-income-divide-university"
 
@@ -185,6 +190,8 @@ def handler():
     raw_dir.upload_from_file(content)
     tag = datacatalog.set_status_completed(tag)
 
+
+def create_external_table(project_id: str) -> None:
     client = bigquery.Client()
     dataset_id = "social_dataset"
     dataset_ref = bigquery.DatasetReference(project_id, dataset_id)
@@ -207,5 +214,39 @@ def handler():
     table.external_data_configuration = external_config
 
     table = client.create_table(table, exists_ok=True)
+
+
+@app.post("/")
+def handler():
+    storage_client = storage.Client()
+
+    # The name for the new bucket
+    project_id = os.environ.get("GOOGLE_CLOUD_PROJECT")
+    region = os.environ.get("GCLOUD_REGION")
+
+    datacatalog = data_catalog.Client(project_id, region)
+    entry_group_id = "social_data"
+    tag_template_id = "data_ingestion"
+    entry_group = datacatalog.get_entry_group(entry_group_id)
+    tag_template = datacatalog.get_tag_template(tag_template_id)
+
+    content = load_stats_raw(
+        storage_client,
+        datacatalog,
+        region,
+        entry_group,
+        tag_template,
+    )
+
+    load_income_stats(
+        storage_client,
+        datacatalog,
+        region,
+        entry_group,
+        tag_template,
+        content,
+    )
+
+    create_external_table(project_id)
 
     return Response(status_code=200)
