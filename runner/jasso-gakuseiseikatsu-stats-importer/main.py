@@ -1,5 +1,5 @@
+from typing import Optional
 import os
-import datetime
 import requests
 import io
 import pandas as pd
@@ -8,54 +8,37 @@ from google.cloud import datacatalog_v1
 from google.cloud import bigquery
 from fastapi import FastAPI, Response
 
+try:
+    from clients import data_catalog
+except:  # noqa E722
+    from ..clients import data_catalog
+
 app = FastAPI(debug=False)
 
 
-@app.post("/")
-def handler():
-    storage_client = storage.Client()
-
-    # The name for the new bucket
+def load_stats_raw(
+    storage_client: storage.Client,
+    datacatalog: data_catalog.Client,
+    region: str,
+    entry_group: datacatalog_v1.EntryGroup,
+    tag_template: datacatalog_v1.TagTemplate,
+) -> Optional[io.BytesIO]:
     bucket_name = "jasso-gakuseiseikatsu-stats-raw"
-    project_id = os.environ.get("GOOGLE_CLOUD_PROJECT")
-    region = os.environ.get("GCLOUD_REGION")
-
-    # Creates the new bucket
     bucket = storage_client.bucket(bucket_name)
     if not bucket.exists():
         bucket.create(location=region)
 
-    datacatalog = datacatalog_v1.DataCatalogClient()
-    entry_group_id = "social_data"
-    entry_group = datacatalog.get_entry_group(
-        name=datacatalog_v1.DataCatalogClient.entry_group_path(
-            project_id, region, entry_group_id
-        )
-    )
-    tag_template = datacatalog.get_tag_template(
-        name=datacatalog_v1.DataCatalogClient.tag_template_path(
-            project_id, region, "data_ingestion"
-        )
-    )
-
     entry_id = "jasso_gakuseiseikatsu_stats_raw"
-    entries = datacatalog.list_entries(parent=entry_group.name)
-    entries = [entry for entry in entries if entry.display_name == bucket_name]
-    if len(entries) != 0:
-        entry = entries[0]
-    else:
+    entry = datacatalog.get_entry(entry_group, entry_id)
+    if entry is None:
         entry = datacatalog_v1.types.Entry()
         entry.display_name = bucket_name
         entry.gcs_fileset_spec.file_patterns.append(f"gs://{bucket_name}/*.xlsx")
         entry.type_ = datacatalog_v1.EntryType.FILESET
-        entry = datacatalog.create_entry(
-            parent=entry_group.name, entry_id=entry_id, entry=entry
-        )
+        entry = datacatalog.create_entry(entry_group, entry_id, entry)
 
-    tags = list(datacatalog.list_tags(parent=entry.name))
-    if len(tags) != 0:
-        tag = tags[0]
-    else:
+    tag = datacatalog.get_tag(entry)
+    if tag is None:
         tag = datacatalog_v1.types.Tag()
         tag.template = tag_template.name
         tag.fields["data_sources"] = datacatalog_v1.types.TagField()
@@ -66,16 +49,8 @@ def handler():
         tag.fields[
             "license"
         ].string_value = "日本学生支援機構が「学生生活調査」「高等専門学校生生活調査」「専修学校生生活調査」の結果として公開している情報は、出典の記載をしていただいた上で、どなたでも自由に利用できます。 https://www.jasso.go.jp/about/statistics/gakusei_chosa/riyou.html"
-        tag = datacatalog.create_tag(parent=entry.name, tag=tag)
-
-    tag.fields["latest_job_status"] = datacatalog_v1.types.TagField()
-    tag.fields[
-        "latest_job_status"
-    ].enum_value = datacatalog_v1.types.TagField.EnumValue()
-    tag.fields["latest_job_status"].enum_value.display_name = "running"
-    tag.fields["latest_job_start_datetime"] = datacatalog_v1.types.TagField()
-    tag.fields["latest_job_start_datetime"].timestamp_value = datetime.datetime.now()
-    tag = datacatalog.update_tag(tag=tag)
+        tag = datacatalog.create_tag(entry, tag=tag)
+    tag = datacatalog.set_status_running(tag)
 
     raw_dir = bucket.blob("data18_2.xlsx")
     res = requests.get(
@@ -86,29 +61,25 @@ def handler():
         content = io.BytesIO(res.content)
     res.close()
     raw_dir.upload_from_file(content)
+    tag = datacatalog.set_status_completed(tag)
 
-    tag.fields["latest_job_status"] = datacatalog_v1.types.TagField()
-    tag.fields[
-        "latest_job_status"
-    ].enum_value = datacatalog_v1.types.TagField.EnumValue()
-    tag.fields["latest_job_status"].enum_value.display_name = "completed"
-    tag.fields["latest_job_end_datetime"] = datacatalog_v1.types.TagField()
-    tag.fields["latest_job_end_datetime"].timestamp_value = datetime.datetime.now()
-    tag.fields["latest_job_run_time"] = datacatalog_v1.types.TagField()
-    tag.fields["latest_job_run_time"].string_value = str(
-        tag.fields["latest_job_end_datetime"].timestamp_value
-        - tag.fields["latest_job_start_datetime"].timestamp_value
-    )
-    tag = datacatalog.update_tag(tag=tag)
+    return content
+
+
+def load_income_stats(
+    storage_client: storage.Client,
+    datacatalog: data_catalog.Client,
+    region: str,
+    entry_group: datacatalog_v1.EntryGroup,
+    tag_template: datacatalog_v1.TagTemplate,
+    content: Optional[io.BytesIO],
+) -> pd.DataFrame:
 
     bucket_name = "jasso-gakuseiseikatsu-stats-annual-income-divide-university"
 
     entry_id = "jasso_gakuseiseikatsu_stats_annual_income_divide_university"
-    entries = datacatalog.list_entries(parent=entry_group.name)
-    entries = [entry for entry in entries if entry.display_name == bucket_name]
-    if len(entries) != 0:
-        entry = entries[0]
-    else:
+    entry = datacatalog.get_entry(entry_group, entry_id)
+    if entry is None:
         entry = datacatalog_v1.types.Entry()
         entry.display_name = bucket_name
         entry.gcs_fileset_spec.file_patterns.append(f"gs://{bucket_name}/*.parquet")
@@ -158,17 +129,10 @@ def handler():
         )
 
         entry.schema.columns.extend(columns)
+        entry = datacatalog.create_entry(entry_group, entry_id, entry)
 
-        entry = datacatalog.create_entry(
-            parent=entry_group.name,
-            entry_id=entry_id,
-            entry=entry,
-        )
-
-    tags = list(datacatalog.list_tags(parent=entry.name))
-    if len(tags) != 0:
-        tag = tags[0]
-    else:
+    tag = datacatalog.get_tag(entry)
+    if tag is None:
         tag = datacatalog_v1.types.Tag()
         tag.template = tag_template.name
         tag.fields["data_sources"] = datacatalog_v1.types.TagField()
@@ -181,16 +145,8 @@ def handler():
         tag.fields[
             "license"
         ].string_value = "日本学生支援機構が「学生生活調査」「高等専門学校生生活調査」「専修学校生生活調査」の結果として公開している情報は、出典の記載をしていただいた上で、どなたでも自由に利用できます。 https://www.jasso.go.jp/about/statistics/gakusei_chosa/riyou.html"
-        tag = datacatalog.create_tag(parent=entry.name, tag=tag)
-
-    tag.fields["latest_job_status"] = datacatalog_v1.types.TagField()
-    tag.fields[
-        "latest_job_status"
-    ].enum_value = datacatalog_v1.types.TagField.EnumValue()
-    tag.fields["latest_job_status"].enum_value.display_name = "running"
-    tag.fields["latest_job_start_datetime"] = datacatalog_v1.types.TagField()
-    tag.fields["latest_job_start_datetime"].timestamp_value = datetime.datetime.now()
-    tag = datacatalog.update_tag(tag=tag)
+        tag = datacatalog.create_tag(entry, tag=tag)
+    tag = datacatalog.set_status_running(tag)
 
     df = pd.read_excel(content, sheet_name=8)
     data = []
@@ -232,21 +188,10 @@ def handler():
     res.to_parquet(content)
     content.seek(0)
     raw_dir.upload_from_file(content)
+    tag = datacatalog.set_status_completed(tag)
 
-    tag.fields["latest_job_status"] = datacatalog_v1.types.TagField()
-    tag.fields[
-        "latest_job_status"
-    ].enum_value = datacatalog_v1.types.TagField.EnumValue()
-    tag.fields["latest_job_status"].enum_value.display_name = "completed"
-    tag.fields["latest_job_end_datetime"] = datacatalog_v1.types.TagField()
-    tag.fields["latest_job_end_datetime"].timestamp_value = datetime.datetime.now()
-    tag.fields["latest_job_run_time"] = datacatalog_v1.types.TagField()
-    tag.fields["latest_job_run_time"].string_value = str(
-        tag.fields["latest_job_end_datetime"].timestamp_value
-        - tag.fields["latest_job_start_datetime"].timestamp_value
-    )
-    tag = datacatalog.update_tag(tag=tag)
 
+def create_external_table(project_id: str) -> None:
     client = bigquery.Client()
     dataset_id = "social_dataset"
     dataset_ref = bigquery.DatasetReference(project_id, dataset_id)
@@ -269,5 +214,39 @@ def handler():
     table.external_data_configuration = external_config
 
     table = client.create_table(table, exists_ok=True)
+
+
+@app.post("/")
+def handler():
+    storage_client = storage.Client()
+
+    # The name for the new bucket
+    project_id = os.environ.get("GOOGLE_CLOUD_PROJECT")
+    region = os.environ.get("GCLOUD_REGION")
+
+    datacatalog = data_catalog.Client(project_id, region)
+    entry_group_id = "social_data"
+    tag_template_id = "data_ingestion"
+    entry_group = datacatalog.get_entry_group(entry_group_id)
+    tag_template = datacatalog.get_tag_template(tag_template_id)
+
+    content = load_stats_raw(
+        storage_client,
+        datacatalog,
+        region,
+        entry_group,
+        tag_template,
+    )
+
+    load_income_stats(
+        storage_client,
+        datacatalog,
+        region,
+        entry_group,
+        tag_template,
+        content,
+    )
+
+    create_external_table(project_id)
 
     return Response(status_code=200)
