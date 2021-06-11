@@ -10,3 +10,9 @@ build_and_deploy: build deploy
 
 trigger:
 	gcloud pubsub topics publish $(SERVICE_NAME) --message=$(MESSAGE)
+
+run_server:
+	cp -r clients ./$(SERVICE_NAME)/clients
+	docker build -t social-dashboard/$(SERVICE_NAME):latest ./$(SERVICE_NAME)
+	rm -rf ./$(SERVICE_NAME)/clients
+	docker run --rm social-dashboard/$(SERVICE_NAME):latest
