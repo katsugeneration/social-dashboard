@@ -49,7 +49,7 @@ def load_stats_raw(
         tag.fields[
             "license"
         ].string_value = "日本学生支援機構が「学生生活調査」「高等専門学校生生活調査」「専修学校生生活調査」の結果として公開している情報は、出典の記載をしていただいた上で、どなたでも自由に利用できます。 https://www.jasso.go.jp/about/statistics/gakusei_chosa/riyou.html"
-        tag = datacatalog.create_tag(parent=entry.name, tag=tag)
+        tag = datacatalog.create_tag(entry, tag=tag)
     tag = datacatalog.set_status_running(tag)
 
     raw_dir = bucket.blob("data18_2.xlsx")
@@ -145,7 +145,7 @@ def load_income_stats(
         tag.fields[
             "license"
         ].string_value = "日本学生支援機構が「学生生活調査」「高等専門学校生生活調査」「専修学校生生活調査」の結果として公開している情報は、出典の記載をしていただいた上で、どなたでも自由に利用できます。 https://www.jasso.go.jp/about/statistics/gakusei_chosa/riyou.html"
-        tag = datacatalog.create_tag(parent=entry.name, tag=tag)
+        tag = datacatalog.create_tag(entry, tag=tag)
     tag = datacatalog.set_status_running(tag)
 
     df = pd.read_excel(content, sheet_name=8)
