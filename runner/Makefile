@@ -14,5 +14,5 @@ trigger:
 run_server:
 	cp -r clients ./$(SERVICE_NAME)/clients
 	docker build -t social-dashboard/$(SERVICE_NAME):latest ./$(SERVICE_NAME)
+	docker run --rm -v ~/.config:/root/.config -v $(shell pwd)/$(SERVICE_NAME):/app -e GOOGLE_CLOUD_PROJECT -e GCLOUD_REGION -p 8080:8080 social-dashboard/$(SERVICE_NAME):latest main:app --reload --host 0.0.0.0 --port 8080
 	rm -rf ./$(SERVICE_NAME)/clients
-	docker run --rm social-dashboard/$(SERVICE_NAME):latest
