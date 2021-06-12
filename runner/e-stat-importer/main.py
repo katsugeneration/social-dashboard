@@ -65,6 +65,7 @@ def load_stats_raw(
         content = io.BytesIO(res.content)
     res.close()
     raw_dir.upload_from_file(content)
+    content.seek(0)
     tag = datacatalog.set_status_completed(tag)
 
     return content
