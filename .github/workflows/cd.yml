@@ -54,6 +54,7 @@ jobs:
         run: terraform plan -no-color -detailed-exitcode -var "gcp_region=${{ secrets.GCLOUD_REGION }}"
 
   deploy_dbt:
+    needs: [deploy_terraform, deploy_runner]
     runs-on: ubuntu-20.04
     container: 
       image: python:3.9.5
@@ -88,7 +89,9 @@ jobs:
         run: |
           poetry run dbt run --profiles-dir ./ --vars "{bq_dataset_name: social_dataset}" -t prod && \
           poetry run dbt test --profiles-dir ./ --vars "{bq_dataset_name: social_dataset}" -t prod
+
   deploy_runner:
+    needs: deploy_terraform
     runs-on: ubuntu-20.04
     strategy:
       max-parallel: 4
