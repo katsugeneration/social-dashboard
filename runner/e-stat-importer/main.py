@@ -226,9 +226,9 @@ def handler():
 
     project_id = os.environ.get("GOOGLE_CLOUD_PROJECT")
     region = os.environ.get("GCLOUD_REGION")
-    app_id = secret_manager.get_secret(
+    app_id = secret_manager.access_secret_version(
         name=f"projects/{project_id}/secrets/e-stat-app-id/versions/latest"
-    )
+    ).payload.data.decode("utf-8")
 
     datacatalog = data_catalog.Client(project_id, region)
     entry_group_id = "social_data"
