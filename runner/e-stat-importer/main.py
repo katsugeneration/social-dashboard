@@ -7,6 +7,7 @@ import pandas as pd
 from google.cloud import storage
 from google.cloud import datacatalog_v1
 from google.cloud import bigquery
+from google.cloud import secretmanager
 from fastapi import FastAPI, Response
 
 try:
@@ -221,10 +222,13 @@ def create_external_table(project_id: str) -> None:
 @app.post("/")
 def handler():
     storage_client = storage.Client()
+    secret_manager = secretmanager.SecretManagerServiceClient()
 
-    # The name for the new bucket
     project_id = os.environ.get("GOOGLE_CLOUD_PROJECT")
     region = os.environ.get("GCLOUD_REGION")
+    app_id = secret_manager.get_secret(
+        name=f"projects/{project_id}/secrets/e-stat-app-id/versions/latest"
+    )
 
     datacatalog = data_catalog.Client(project_id, region)
     entry_group_id = "social_data"
@@ -238,6 +242,7 @@ def handler():
         region,
         entry_group,
         tag_template,
+        app_id,
     )
 
     load_income_stats(

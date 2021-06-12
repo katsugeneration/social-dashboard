@@ -230,6 +230,21 @@ libcst = ">=0.2.5"
 proto-plus = ">=1.4.0"
 
 [[package]]
+name = "google-cloud-secret-manager"
+version = "2.5.0"
+description = "Secret Manager API API client library"
+category = "main"
+optional = false
+python-versions = ">=3.6"
+
+[package.dependencies]
+google-api-core = {version = ">=1.22.2,<2.0.0dev", extras = ["grpc"]}
+grpc-google-iam-v1 = ">=0.12.3,<0.13dev"
+libcst = ">=0.2.5"
+packaging = ">=14.3"
+proto-plus = ">=1.4.0"
+
+[[package]]
 name = "google-cloud-storage"
 version = "1.38.0"
 description = "Google Cloud Storage API client library"
@@ -743,7 +758,7 @@ python-versions = ">=3.6.1"
 [metadata]
 lock-version = "1.1"
 python-versions = "~3.9"
-content-hash = "b92a6477246b384286b9aac78a527ae5c8604f087338cc2c6cbd75963955f0e3"
+content-hash = "bedbf4956ccbee8c7b9bd64d9c6ed53d51c4ad43246806bed576929df13664e4"
 
 [metadata.files]
 appdirs = [
@@ -860,6 +875,10 @@ google-cloud-core = [
 google-cloud-datacatalog = [
     {file = "google-cloud-datacatalog-3.2.0.tar.gz", hash = "sha256:a841a89bf3596cf05e8adf24734433111ef25585867e17fa4b64d36bce759004"},
     {file = "google_cloud_datacatalog-3.2.0-py2.py3-none-any.whl", hash = "sha256:3655d16c6d529f952c661add56c51ebe9eff3a25451a47056978b7b9d5595d77"},
+]
+google-cloud-secret-manager = [
+    {file = "google-cloud-secret-manager-2.5.0.tar.gz", hash = "sha256:e99eb9f77373b97bfc1becb7d23fae5574a33fd9e44b44a3e700abcbfbc9f94d"},
+    {file = "google_cloud_secret_manager-2.5.0-py2.py3-none-any.whl", hash = "sha256:7e09052c347f05a1807784467d5b8ff43675afc96812fdd70914ba136cd37311"},
 ]
 google-cloud-storage = [
     {file = "google-cloud-storage-1.38.0.tar.gz", hash = "sha256:162011d66f64b8dc5d7936609a5daf0066cc521231546aea02c126a5559446c4"},
