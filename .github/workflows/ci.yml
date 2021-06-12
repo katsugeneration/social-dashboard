@@ -105,6 +105,7 @@ jobs:
         run: |
           poetry run dbt debug --profiles-dir ./ --vars "{bq_dataset_name: social_dataset}" -t prod && \
           poetry run dbt parse --profiles-dir ./ --vars "{bq_dataset_name: social_dataset}" -t prod
+
   check_runner:
     runs-on: ubuntu-20.04
     strategy:
@@ -112,6 +113,7 @@ jobs:
       matrix:
         runner:
           - jasso-gakuseiseikatsu-stats-importer
+          - e-stat-importer
     defaults:
       run:
         working-directory: runner
