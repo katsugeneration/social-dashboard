@@ -54,7 +54,7 @@ def load_stats_raw(
         tag = datacatalog.create_tag(entry, tag=tag)
     tag = datacatalog.set_status_running(tag)
 
-    raw_dir = bucket.blob("income-divide-over-two-member.json")
+    raw_dir = bucket.blob("income-divide-over-two-member-2020.json")
     res = requests.get(
         "http://api.e-stat.go.jp/rest/3.0/app/json/getStatsData?appId=%s&lang=J&statsDataId=0002070005&metaGetFlg=Y&cntGetFlg=N&explanationGetFlg=Y&annotationGetFlg=Y&sectionHeaderFlg=1"
         % app_id
