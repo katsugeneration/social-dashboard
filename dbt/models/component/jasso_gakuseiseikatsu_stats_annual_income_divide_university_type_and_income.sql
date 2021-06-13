@@ -1,12 +1,12 @@
 {{ config(
     materialized = 'view'
-) }} CREATE temp FUNCTION range_rate(
+) }} CREATE temp FUNCTION range_sum_value(
     cumrate float64,
     rate float64,
     range_num int64,
     min_num int64,
     range_value int64
-) returns SUM(
+) returns float64 AS (
     range_value * IF(
         min_num < cumrate - rate
         AND cumrate <= min_num + range_num,
@@ -22,7 +22,7 @@
             )
         )
     )
-) / range_num;
+);
 WITH temp_incomes AS (
 
     SELECT
@@ -64,14 +64,16 @@ cum_rates AS (
 SELECT
     university_type,
     YEAR,
-    quintile AS "年収五分位1",
-    range_rate(
-        cumrate,
-        rate,
-        20,
-        0,
-        range_value
-    ) AS "value"
+    '年収五分位1' AS quintile,
+    SUM(
+        range_sum_value(
+            cumrate,
+            rate,
+            20,
+            0,
+            range_value
+        )
+    ) / 20 AS VALUE
 FROM
     cum_rates
 GROUP BY
@@ -81,14 +83,16 @@ UNION ALL
 SELECT
     university_type,
     YEAR,
-    quintile AS "年収五分位2",
-    range_rate(
-        cumrate,
-        rate,
-        20,
-        20,
-        range_value
-    ) AS "value"
+    '年収五分位2' AS quintile,
+    SUM(
+        range_sum_value(
+            cumrate,
+            rate,
+            20,
+            20,
+            range_value
+        )
+    ) / 20 AS VALUE
 FROM
     cum_rates
 GROUP BY
@@ -98,14 +102,16 @@ UNION ALL
 SELECT
     university_type,
     YEAR,
-    quintile AS "年収五分位3",
-    range_rate(
-        cumrate,
-        rate,
-        20,
-        40,
-        range_value
-    ) AS "value"
+    '年収五分位3' AS quintile,
+    SUM(
+        range_sum_value(
+            cumrate,
+            rate,
+            20,
+            40,
+            range_value
+        )
+    ) / 20 AS VALUE
 FROM
     cum_rates
 GROUP BY
@@ -115,14 +121,16 @@ UNION ALL
 SELECT
     university_type,
     YEAR,
-    quintile AS "年収五分位4",
-    range_rate(
-        cumrate,
-        rate,
-        20,
-        60,
-        range_value
-    ) AS "value"
+    '年収五分位4' AS quintile,
+    SUM(
+        range_sum_value(
+            cumrate,
+            rate,
+            20,
+            60,
+            range_value
+        )
+    ) / 20 AS VALUE
 FROM
     cum_rates
 GROUP BY
@@ -132,14 +140,16 @@ UNION ALL
 SELECT
     university_type,
     YEAR,
-    quintile AS "年収五分位5",
-    range_rate(
-        cumrate,
-        rate,
-        20,
-        80,
-        range_value
-    ) AS "value"
+    '年収五分位5' AS quintile,
+    SUM(
+        range_sum_value(
+            cumrate,
+            rate,
+            20,
+            80,
+            range_value
+        )
+    ) / 20 AS VALUE
 FROM
     cum_rates
 GROUP BY
@@ -149,8 +159,10 @@ UNION ALL
 SELECT
     university_type,
     YEAR,
-    quintile AS "平均",
-    rate * range_value / 100 AS "value"
+    '平均' AS quintile,
+    SUM(
+        rate * range_value
+    ) / 100 AS VALUE
 FROM
     cum_rates
 GROUP BY
