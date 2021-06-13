@@ -9,28 +9,10 @@ models:
             description: "University type"
           - name: year
             description: "Stat year"
-          - name: divide_1st
-            description: "1st divide income"
-            tests:
-              - is_over:
-                  criteria: 0
-          - name: divide_2nd
-            description: "2nd divide income"
-            tests:
-              - is_over:
-                  criteria: 0
-          - name: divide_3rd
-            description: "3rd divide income"
-            tests:
-              - is_over:
-                  criteria: 0
-          - name: divide_4th
-            description: "4th divide income"
-            tests:
-              - is_over:
-                  criteria: 0
-          - name: divide_5th
-            description: "5th divide income"
+          - name: quintile
+            description: "quintile name"
+          - name: value
+            description: "quintile average annual income"
             tests:
               - is_over:
                   criteria: 0
