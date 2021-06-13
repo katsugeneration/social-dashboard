@@ -1,28 +1,7 @@
 {{ config(
     materialized = 'view'
-) }} CREATE temp FUNCTION range_sum_value(
-    cumrate float64,
-    rate float64,
-    range_num int64,
-    min_num int64,
-    range_value int64
-) returns float64 AS (
-    range_value * IF(
-        min_num < cumrate - rate
-        AND cumrate <= min_num + range_num,
-        rate,
-        IF(
-            cumrate <= min_num
-            OR cumrate - rate > min_num + range_num,
-            0,
-            IF(
-                cumrate - rate <= min_num,
-                cumrate - min_num,
-                rate - cumrate + min_num + range_num
-            )
-        )
-    )
-);
+) }}
+
 WITH temp_incomes AS (
 
     SELECT
@@ -66,13 +45,13 @@ SELECT
     YEAR,
     '年収五分位1' AS quintile,
     SUM(
-        range_sum_value(
-            cumrate,
-            rate,
+        {{ range_sum_value(
+            'cumrate',
+            'rate',
             20,
-            0,
-            range_value
-        )
+            00,
+            'range_value'
+        ) }}
     ) / 20 AS VALUE
 FROM
     cum_rates
@@ -85,13 +64,13 @@ SELECT
     YEAR,
     '年収五分位2' AS quintile,
     SUM(
-        range_sum_value(
-            cumrate,
-            rate,
+        {{ range_sum_value(
+            'cumrate',
+            'rate',
             20,
             20,
-            range_value
-        )
+            'range_value'
+        ) }}
     ) / 20 AS VALUE
 FROM
     cum_rates
@@ -104,13 +83,13 @@ SELECT
     YEAR,
     '年収五分位3' AS quintile,
     SUM(
-        range_sum_value(
-            cumrate,
-            rate,
+        {{ range_sum_value(
+            'cumrate',
+            'rate',
             20,
             40,
-            range_value
-        )
+            'range_value'
+        ) }}
     ) / 20 AS VALUE
 FROM
     cum_rates
@@ -123,13 +102,13 @@ SELECT
     YEAR,
     '年収五分位4' AS quintile,
     SUM(
-        range_sum_value(
-            cumrate,
-            rate,
+        {{ range_sum_value(
+            'cumrate',
+            'rate',
             20,
             60,
-            range_value
-        )
+            'range_value'
+        ) }}
     ) / 20 AS VALUE
 FROM
     cum_rates
@@ -142,13 +121,13 @@ SELECT
     YEAR,
     '年収五分位5' AS quintile,
     SUM(
-        range_sum_value(
-            cumrate,
-            rate,
+        {{ range_sum_value(
+            'cumrate',
+            'rate',
             20,
             80,
-            range_value
-        )
+            'range_value'
+        ) }}
     ) / 20 AS VALUE
 FROM
     cum_rates
