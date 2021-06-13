@@ -1,0 +1,18 @@
+
+version: 2
+
+models:
+    - name: annual_income_divide_5_quintile
+      description: "Annual income divide 5 quintile in target sement type."
+      columns:
+          - name: type
+            description: "Target segment type"
+          - name: year
+            description: "Stat year"
+          - name: quintile
+            description: "quintile name"
+          - name: value
+            description: "quintile average annual income"
+            tests:
+              - is_over:
+                  criteria: 0
