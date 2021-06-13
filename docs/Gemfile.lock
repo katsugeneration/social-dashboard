@@ -280,6 +280,7 @@ DEPENDENCIES
   jekyll
   jekyll-include-cache
   jekyll-paginate-v2
+  jekyll-seo-tag
   minimal-mistakes-jekyll
 
 BUNDLED WITH

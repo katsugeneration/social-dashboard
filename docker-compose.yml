@@ -4,7 +4,7 @@ services:
   devenv:
     build: .
     volumes:
-      - devenv:/app
+      - devenv:/root
       - .:/app/repo
       - ~/.aws:/root/.aws
       - ~/.config:/root/.config
@@ -13,6 +13,8 @@ services:
       - AWS_DEFAULT_REGION
       - AWS_PROFILE
       - GOOGLE_CLOUD_PROJECT
+    ports:
+      - 4000:4000
     tty: true
 volumes:
   devenv:
