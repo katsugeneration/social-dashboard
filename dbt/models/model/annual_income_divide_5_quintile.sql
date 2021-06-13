@@ -9,7 +9,7 @@ SELECT
     ) AS TYPE,
     YEAR,
     quintile,
-    VALUE * 1000 AS VALUE
+    VALUE * 10000 AS VALUE
 FROM
     social_dataset.jasso_gakuseiseikatsu_stats_annual_income_divide_university_type_and_income
 UNION ALL
