@@ -2,7 +2,7 @@ FROM python:3.9.5-slim-buster
 
 ENV TF_VERION=0.15.3
 
-RUN apt-get update && apt-get install -y git curl unzip gnupg lsb-release software-properties-common libpq-dev build-essential python-dev
+RUN apt-get update && apt-get install -y git curl unzip gnupg lsb-release software-properties-common libpq-dev build-essential python-dev ruby ruby-dev
 
 # Install Terraform
 RUN git clone https://github.com/tfutils/tfenv.git ~/.tfenv && \
@@ -24,7 +24,11 @@ RUN echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] http://packages.c
 
 RUN mkdir -p /app/repo
 COPY poetry.lock pyproject.toml /app/repo/
+COPY docs/Gemfile /app/repo/docs/
 WORKDIR /app/repo
+
+# Install jekyll
+RUN gem install bundler && bundle install --gemfile docs/Gemfile --path docs/vendor/bundle
 
 # Install poetry
 RUN pip install poetry && \

@@ -1,1 +1,24 @@
-theme: jekyll-theme-cayman
+remote_theme: "mmistakes/minimal-mistakes"
+# theme: minimal-mistakes-jekyll
+locale: ja-JP
+encoding: utf-8
+minimal_mistakes_skin: dark
+title: Social Dashboard
+subtitle: Dashboard of Social Open Data
+name: Katsuya Shimabukuro
+description: "行政や無料公開されているデータを元に分析結果とその結果を得るための加工処理をを行うためのスクリプトを公開しています"
+repository: katsugeneration/social-dashboard
+
+defaults:
+  # _posts
+  - scope:
+      path: ""
+      type: posts
+    values:
+      show_date: true
+      date_format: "%Y-%m-%d"
+      comments: false
+      search: true
+      related: true
+      author_profile: false
+      share: true
