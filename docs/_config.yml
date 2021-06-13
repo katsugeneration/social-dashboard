@@ -8,6 +8,10 @@ subtitle: Dashboard of Social Open Data
 name: Katsuya Shimabukuro
 description: "行政や無料公開されているデータを元に分析結果とその結果を得るための加工処理をを行うためのスクリプトを公開しています"
 repository: katsugeneration/social-dashboard
+plugins:
+  - jekyll-include-cache
+  - jekyll-seo-tag
+  - jekyll-paginate-v2
 
 defaults:
   # _posts
