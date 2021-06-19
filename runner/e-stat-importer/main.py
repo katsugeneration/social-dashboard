@@ -11,9 +11,9 @@ from google.cloud import secretmanager
 from fastapi import FastAPI, Response
 
 try:
-    from clients import data_catalog
+    from utils.clients import data_catalog
 except:  # noqa E722
-    from ..clients import data_catalog
+    from ..utils.clients import data_catalog
 
 app = FastAPI(debug=False)
 
