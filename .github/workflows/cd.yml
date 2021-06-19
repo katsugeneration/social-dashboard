@@ -108,7 +108,7 @@ jobs:
           git fetch --no-tags --prune --depth=1 origin +refs/heads/*:refs/remotes/origin/*
       - id: check_runner
         run: |
-          ret=$(git diff origin/main HEAD --name-only | grep -E '^runner/${{ matrix.runner }}' | wc -l)
+          ret=$(git diff origin/main HEAD --name-only | grep -E '(^runner/${{ matrix.runner }}|^runner/utils)' | wc -l)
           if [ $ret -ne 0 ] ; then
             exit 0
           else
