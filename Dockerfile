@@ -5,8 +5,8 @@ ENV TF_VERION=0.15.3
 RUN apt-get update && apt-get install -y git curl unzip gnupg lsb-release software-properties-common libpq-dev build-essential python-dev ruby ruby-dev
 
 # Install Terraform
-RUN git clone https://github.com/tfutils/tfenv.git ~/.tfenv && \
-    echo 'export PATH="$HOME/.tfenv/bin:$PATH"' >> ~/.bashrc && \
+RUN git clone https://github.com/tfutils/tfenv.git $HOME/.tfenv && \
+    echo 'export PATH="$HOME/.tfenv/bin:$PATH"' >> $HOME/.bashrc && \
     $HOME/.tfenv/bin/tfenv install ${TF_VERION} && \
     $HOME/.tfenv/bin/tfenv use ${TF_VERION}
 
