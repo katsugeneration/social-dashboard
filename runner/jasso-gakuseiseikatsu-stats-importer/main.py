@@ -178,12 +178,18 @@ def load_income_stats(
         },
     }
     df.iloc[2] = df.iloc[2].str.replace("\s", "", regex=True)
+    label_first_index = 0
+    while True:
+        label = df.iloc[2, label_first_index]
+        if label == "200万円未満":
+            break
+        label_first_index += 1
     for s in ["男", "女", "平均"]:
         for g in ["国立", "公立", "私立", "平均"]:
             if g not in row_num[s]:
                 continue
             ic = row_num[s][g]
-            for i in range(3, 18):
+            for i in range(label_first_index, label_first_index+15):
                 k = df.iloc[2, i]
                 data.append((s, g, k, df.iloc[ic, i]))
 
