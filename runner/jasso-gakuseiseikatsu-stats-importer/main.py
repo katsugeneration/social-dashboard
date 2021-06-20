@@ -19,7 +19,7 @@ app = FastAPI(debug=False)
 
 class RequestPayload(BaseModel):
     target_year: int
-    target_path: int
+    target_path: str
 
 
 def load_stats_raw(
