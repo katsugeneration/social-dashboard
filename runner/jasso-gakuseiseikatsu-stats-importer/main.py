@@ -7,6 +7,7 @@ from google.cloud import storage
 from google.cloud import datacatalog_v1
 from google.cloud import bigquery
 from fastapi import FastAPI, Response
+from pydantic import BaseModel
 
 try:
     from utils.clients import data_catalog
@@ -16,12 +17,19 @@ except:  # noqa E722
 app = FastAPI(debug=False)
 
 
+class RequestPayload(BaseModel):
+    target_year: int
+    target_path: int
+
+
 def load_stats_raw(
     storage_client: storage.Client,
     datacatalog: data_catalog.Client,
     region: str,
     entry_group: datacatalog_v1.EntryGroup,
     tag_template: datacatalog_v1.TagTemplate,
+    target_year: int,
+    target_path: str,
 ) -> Optional[io.BytesIO]:
     bucket_name = "jasso-gakuseiseikatsu-stats-raw"
     bucket = storage_client.bucket(bucket_name)
@@ -52,9 +60,9 @@ def load_stats_raw(
         tag = datacatalog.create_tag(entry, tag=tag)
     tag = datacatalog.set_status_running(tag)
 
-    raw_dir = bucket.blob("data18_2.xlsx")
+    raw_dir = bucket.blob(f"data_{target_year}.xlsx")
     res = requests.get(
-        "https://www.jasso.go.jp/about/statistics/gakusei_chosa/__icsFiles/afieldfile/2020/03/16/data18_2.xlsx"
+        target_path,
     )
     content = None
     if res.status_code == 200:
@@ -73,6 +81,7 @@ def load_income_stats(
     entry_group: datacatalog_v1.EntryGroup,
     tag_template: datacatalog_v1.TagTemplate,
     content: Optional[io.BytesIO],
+    target_year: int,
 ) -> pd.DataFrame:
 
     bucket_name = "jasso-gakuseiseikatsu-stats-annual-income-divide-university"
@@ -181,7 +190,7 @@ def load_income_stats(
     bucket = storage_client.bucket(bucket_name)
     if not bucket.exists():
         bucket.create(location=region)
-    raw_dir = bucket.blob("year=2018/data.parquet")
+    raw_dir = bucket.blob(f"year={target_year}/data.parquet")
 
     res = pd.DataFrame(data, columns=["sex", "university_type", "range", "rate"])
     content = io.BytesIO()
@@ -217,12 +226,14 @@ def create_external_table(project_id: str) -> None:
 
 
 @app.post("/")
-def handler():
+def handler(payload: RequestPayload):
     storage_client = storage.Client()
 
     # The name for the new bucket
     project_id = os.environ.get("GOOGLE_CLOUD_PROJECT")
     region = os.environ.get("GCLOUD_REGION")
+    target_year = payload.target_year
+    target_path = payload.target_path
 
     datacatalog = data_catalog.Client(project_id, region)
     entry_group_id = "social_data"
@@ -236,6 +247,8 @@ def handler():
         region,
         entry_group,
         tag_template,
+        target_year,
+        target_path,
     )
 
     load_income_stats(
@@ -245,6 +258,7 @@ def handler():
         entry_group,
         tag_template,
         content,
+        target_year,
     )
 
     create_external_table(project_id)
