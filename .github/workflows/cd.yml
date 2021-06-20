@@ -98,7 +98,7 @@ jobs:
       matrix:
         runner:
           - jasso-gakuseiseikatsu-stats-importer
-          - e-stat-importer
+          - e-stat-kakei-chousa-importer
     defaults:
       run:
         working-directory: runner

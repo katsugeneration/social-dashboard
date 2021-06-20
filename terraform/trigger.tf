@@ -63,11 +63,11 @@ resource "google_pubsub_subscription" "jasso_gakuseiseikatsu_stats_importer_dl" 
 }
 
 resource "google_pubsub_topic" "e_stat_importer" {
-  name = "e-stat-importer"
+  name = "e-stat-kakei-chousa-importer"
 }
 
 resource "google_pubsub_topic" "e_stat_importer_dl" {
-  name = "e-stat-importer-dl"
+  name = "e-stat-kakei-chousa-importer-dl"
 }
 
 resource "google_pubsub_subscription" "e_stat_importer" {
@@ -75,7 +75,7 @@ resource "google_pubsub_subscription" "e_stat_importer" {
   enable_message_ordering    = false
   labels                     = {}
   message_retention_duration = "604800s"
-  name                       = "e-stat-importer"
+  name                       = "e-stat-kakei-chousa-importer"
   retain_acked_messages      = false
   topic                      = google_pubsub_topic.e_stat_importer.id
 
@@ -85,7 +85,7 @@ resource "google_pubsub_subscription" "e_stat_importer" {
 
   push_config {
     attributes    = {}
-    push_endpoint = module.runner["e-stat-importer"].url
+    push_endpoint = module.runner["e-stat-kakei-chousa-importer"].url
 
     oidc_token {
       service_account_email = google_service_account.pubsub_social_dashboard.email
@@ -110,7 +110,7 @@ resource "google_pubsub_subscription" "e_stat_importer_dl" {
   enable_message_ordering    = false
   labels                     = {}
   message_retention_duration = "604800s"
-  name                       = "e-stat-importer-dl"
+  name                       = "e-stat-kakei-chousa-importer-dl"
   retain_acked_messages      = false
   topic                      = google_pubsub_topic.e_stat_importer_dl.id
 

@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "e-stat-importer"
+name = "e-stat-kakei-chousa-importer"
 version = "0.1.0"
 description = ""
 authors = ["Katsuya Shimabukuro <katsu.generation.888@gmail.com>"]
