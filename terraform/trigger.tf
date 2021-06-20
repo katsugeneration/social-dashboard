@@ -62,7 +62,7 @@ resource "google_pubsub_subscription" "jasso_gakuseiseikatsu_stats_importer_dl" 
   timeouts {}
 }
 
-resource "google_pubsub_topic" "e_stat_importer" {
+resource "google_pubsub_topic" "e_stat_kakei_chousa_importer" {
   name = "e-stat-kakei-chousa-importer"
 }
 
@@ -70,14 +70,14 @@ resource "google_pubsub_topic" "e_stat_importer_dl" {
   name = "e-stat-kakei-chousa-importer-dl"
 }
 
-resource "google_pubsub_subscription" "e_stat_importer" {
+resource "google_pubsub_subscription" "e_stat_kakei_chousa_importer" {
   ack_deadline_seconds       = 10
   enable_message_ordering    = false
   labels                     = {}
   message_retention_duration = "604800s"
   name                       = "e-stat-kakei-chousa-importer"
   retain_acked_messages      = false
-  topic                      = google_pubsub_topic.e_stat_importer.id
+  topic                      = google_pubsub_topic.e_stat_kakei_chousa_importer.id
 
   expiration_policy {
     ttl = "2678400s"
