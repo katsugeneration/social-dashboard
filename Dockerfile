@@ -1,4 +1,4 @@
-FROM python:3.9.5-slim-buster
+FROM python:3.9.6-slim-buster
 
 ENV TF_VERION=0.15.3
 
