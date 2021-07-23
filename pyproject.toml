@@ -8,9 +8,9 @@ authors = ["Katsuya Shimabukuro <katsu.generation.888@gmail.com>"]
 python = "^3.9"
 cffi = "^1.14.5"
 cryptography = "~=3.4"
-dbt-core = "^0.19.1"
-dbt-bigquery = "^0.19.1"
-dbt-postgres = "^0.19.1"
+dbt-core = "^0.20.0"
+dbt-bigquery = "^0.20.0"
+dbt-postgres = "^0.20.0"
 
 [tool.poetry.dev-dependencies]
 
