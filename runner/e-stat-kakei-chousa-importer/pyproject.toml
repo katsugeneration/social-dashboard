@@ -14,7 +14,7 @@ google-cloud-bigquery = "^2.20.0"
 uvicorn = {extras = ["standard"], version = "^0.14.0"}
 requests = "^2.25.1"
 google-cloud-storage = "^1.38.0"
-pyarrow = "^4.0.1"
+pyarrow = "^5.0.0"
 google-cloud-secret-manager = "^2.5.0"
 
 [tool.poetry.dev-dependencies]
