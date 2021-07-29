@@ -3,7 +3,7 @@ source 'https://rubygems.org'
 gem "jekyll"
 gem "minimal-mistakes-jekyll"
 group :jekyll_plugins do
-    gem "github-pages", "~> 216"
+    gem "github-pages", "~> 218"
     gem "jekyll-include-cache"
     gem "jekyll-seo-tag"
     gem "jekyll-paginate-v2"
