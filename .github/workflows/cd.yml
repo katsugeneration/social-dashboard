@@ -12,7 +12,7 @@ jobs:
         working-directory: terraform
     if: github.event.label.name == 'apply'
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - run: |
           git fetch --no-tags --prune --depth=1 origin +refs/heads/*:refs/remotes/origin/*
       - id: check_terraform
@@ -62,7 +62,7 @@ jobs:
       run:
         working-directory: dbt
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - run: |
           git fetch --no-tags --prune --depth=1 origin +refs/heads/*:refs/remotes/origin/*
       - id: check_dbt
@@ -103,7 +103,7 @@ jobs:
       run:
         working-directory: runner
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - run: |
           git fetch --no-tags --prune --depth=1 origin +refs/heads/*:refs/remotes/origin/*
       - id: check_runner
