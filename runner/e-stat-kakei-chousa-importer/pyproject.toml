@@ -18,7 +18,7 @@ pyarrow = "^4.0.1"
 google-cloud-secret-manager = "^2.5.0"
 
 [tool.poetry.dev-dependencies]
-mypy = "^0.812"
+mypy = "^0.991"
 flake8 = "^3.9.2"
 black = "^21.5b2"
 

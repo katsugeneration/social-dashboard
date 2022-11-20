@@ -17,7 +17,7 @@ google-cloud-storage = "^1.38.0"
 pyarrow = "^4.0.1"
 
 [tool.poetry.dev-dependencies]
-mypy = "^0.812"
+mypy = "^0.991"
 flake8 = "^3.9.2"
 black = "^21.5b2"
 
