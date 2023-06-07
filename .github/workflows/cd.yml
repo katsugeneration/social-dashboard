@@ -57,7 +57,7 @@ jobs:
     needs: [deploy_terraform, deploy_runner]
     runs-on: ubuntu-20.04
     container: 
-      image: python:3.9.5
+      image: python:3.11.4
     defaults:
       run:
         working-directory: dbt
